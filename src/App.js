@@ -6,23 +6,22 @@ import './Tree.css'
 
 import Tree, { TreeNode } from 'rc-tree';
 
+const DATA = {text: 'Parent',
+              children:[
+                {text: 'Child1', id: 2, children: [{text: 'GrandChild1', id: 5, children: []}]},
+                {text: 'Child2', id: 3, children: []},
+                {text: 'Child3', id: 4, children: []}
+              ],
+              id: 1}
+
 class App extends Component {
 
-  MAX_LEVELS = 3
+  renderTree = (tree) => {
 
-  randomSingleDigitNum = () => {
-    let max = 10
-    let min = 0
-    return Math.floor(Math.random() * (max - min + 1) + min);
-  }
-
-  renderTree = (title, key, childrenSize) => {
-    const level = key.length
-    return <TreeNode title={title} key={key} isLeaf={childrenSize === 0}>
+    return <TreeNode title={tree.text} key={tree.id} isLeaf={tree.children.length === 0}>
       {
-        Array(childrenSize).fill().map((_, i) => {
-          var grandChildrenSize = level >= this.MAX_LEVELS ? 0 : this.randomSingleDigitNum()
-          return this.renderTree(`Child ${key}${i}`, `${key}${i}`, grandChildrenSize)
+        tree.children.map((child, i) => {
+          return this.renderTree(child)
         })
       }
     </TreeNode>
@@ -40,9 +39,9 @@ class App extends Component {
           <Tree
             checkable
             defaultExpandAll={false}
-            defaultExpandedKeys={['12', '15', '19']}
+            defaultExpandedKeys={['1', '2']}
           >
-            {this.renderTree('Parent', '1', 1000)}
+            {this.renderTree(DATA)}
           </Tree>
 
         </div>
