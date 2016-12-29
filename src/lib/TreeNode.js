@@ -30,7 +30,7 @@ export default class TreeNode extends Component {
     return (
       <li className={containerClass}>
         <span onClick={this.handleClick} onTouchEnd={this.handleClick}>
-          { node.children === undefined ? 
+          { node.children === undefined || node.children === [] ?
             '' :
             (this.state.collapsed ? <i className="fa fa-plus-square-o tree_handles" aria-hidden="true"/> : <i className="fa fa-minus-square-o tree_handles" aria-hidden="true" />)
           }
