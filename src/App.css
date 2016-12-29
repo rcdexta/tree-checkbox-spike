@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  font-family: Lato;
 }
 
 .App-logo {
@@ -15,7 +16,7 @@
 }
 
 .App-intro {
-  font-size: large;
+  font-size: medium;
   text-align: left;
   margin: 20px 40px;
 }
@@ -24,3 +25,4 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
