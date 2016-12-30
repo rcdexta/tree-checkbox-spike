@@ -6,6 +6,10 @@ li {
     display: block;
 }
 
+li ul {
+    background: url(line.gif) 0 0 repeat-y;
+}
+
 .material-icons {
     cursor: pointer;
     font-size: 18px;
