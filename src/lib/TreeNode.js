@@ -35,8 +35,8 @@ export default class TreeNode extends Component {
       <li className={containerClass}>
         <span onClick={this.handleClick} onTouchEnd={this.handleClick}>
           { node.children === undefined || node.children.length === 0 ?
-            <span className="placeholder"></span> :
-            (collapsed ? <i className="material-icons">add_circle_outline</i> : <i className="material-icons">remove_circle_outline</i>)
+            <i className="material-icons">fiber_manual_record</i> :
+            (collapsed ? <i className="material-icons">add_circle</i> : <i className="material-icons">remove_circle</i>)
           }
         </span>
 
