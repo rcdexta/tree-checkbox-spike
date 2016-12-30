@@ -5,16 +5,18 @@ export default class TreeNode extends Component {
   state = {collapsed: true}
 
   handleClick = () => {
-    this.setState({collapsed: !this.state.collapsed});
+    this.setState({collapsed: !this.state.collapsed})
   }
 
   render() {
-    var containerClass = this.state.collapsed ? 'collapsed' : '';
-    var node = this.props.node;
-    var childNodes;
+    let {collapsed} = this.state
     
-    if (node.children) {
-      childNodes = node.children.map(function (child, index) {
+    var containerClass = collapsed ? 'collapsed' : ''
+    var node = this.props.node
+    var childNodes
+    
+    if (node.children && !collapsed) {
+      childNodes = node.children.map((child, index) => {
         return (
           <ul key={[node.id, index].join('/')}>
             <TreeNode
@@ -24,7 +26,7 @@ export default class TreeNode extends Component {
             />
           </ul>
         );       
-      }, this);
+      })
     }
 
     return (
@@ -32,7 +34,7 @@ export default class TreeNode extends Component {
         <span onClick={this.handleClick} onTouchEnd={this.handleClick}>
           { node.children === undefined || node.children === [] ?
             '' :
-            (this.state.collapsed ? <i className="fa fa-plus-square-o tree_handles" aria-hidden="true"/> : <i className="fa fa-minus-square-o tree_handles" aria-hidden="true" />)
+            (collapsed ? <i className="fa fa-plus-square-o tree_handles" aria-hidden="true"/> : <i className="fa fa-minus-square-o tree_handles" aria-hidden="true" />)
           }
         </span>
         <input 
@@ -44,7 +46,7 @@ export default class TreeNode extends Component {
         <span onClick={this.handleClick} onTouchEnd={this.handleClick}>{node.text}</span>
         {childNodes}
       </li>
-    );
+    )
   }
 
 }

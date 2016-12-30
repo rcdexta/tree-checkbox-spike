@@ -7,7 +7,6 @@ export default class Tree extends Component {
   
   handleChange = (evt) => {
 
-
     var checked = evt.target.checked;
     var key = evt.target.getAttribute('data-key');
 
