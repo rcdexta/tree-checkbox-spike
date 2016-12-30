@@ -8,11 +8,6 @@ export default class TreeNode extends Component {
     this.setState({collapsed: !this.state.collapsed})
   }
 
-  componentDidUpdate() {
-    document.querySelectorAll('input.indeterminate').forEach((checkbox) => checkbox.indeterminate = true)
-    document.querySelectorAll('input.pristine').forEach((checkbox) => checkbox.indeterminate = false)
-  }
-
   render() {
     let {collapsed} = this.state
     

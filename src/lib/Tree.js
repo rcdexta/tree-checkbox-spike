@@ -39,6 +39,11 @@ export default class Tree extends Component {
     this.createLookupIndices(this.state.data, parent)
   }
 
+  componentDidUpdate() {
+    document.querySelectorAll('input.indeterminate').forEach((checkbox) => checkbox.indeterminate = true)
+    document.querySelectorAll('input.pristine').forEach((checkbox) => checkbox.indeterminate = false)
+  }
+
   handleChange = (evt) => {
 
     let checked = evt.target.checked;
