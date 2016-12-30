@@ -72,6 +72,7 @@ export default class Tree extends Component {
 
     let selectedNode = this.nodeIndex[key]
     selectedNode.checked = checked
+    selectedNode.partialChecked = false
     if (selectedNode.children) {
       selectedNode.children.forEach(checkAllChildren);
     }
