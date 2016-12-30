@@ -7,13 +7,13 @@ export default class Tree extends Component {
   parentIndex = {}
   state = {data: this.props.data}
 
-  createLookupIndices = (nodes, parent) => {
+  createFastLookUpIndex = (nodes, parent) => {
     nodes.forEach((item) => {
       let id = item.id.toString();
       this.nodeIndex[id] = item
       this.parentIndex[id] = parent
       if (item.children) {
-        this.createLookupIndices(item.children, item)
+        this.createFastLookUpIndex(item.children, item)
       }
     })
   }
@@ -36,7 +36,7 @@ export default class Tree extends Component {
 
   componentWillMount() {
     let parent = undefined
-    this.createLookupIndices(this.state.data, parent)
+    this.createFastLookUpIndex(this.state.data, parent)
   }
 
   componentDidUpdate() {
@@ -55,23 +55,6 @@ export default class Tree extends Component {
         node.children.forEach(checkAllChildren);
       }
     };
-
-    let traverseNodes = function (node) {
-      if (node.id == key) {
-        node.checked = checked;
-        if (node.children) {
-          node.children.forEach(checkAllChildren);
-        }
-      }
-
-      if (node.children) {
-        node.children.forEach(traverseNodes);
-      }
-    };
-
-    // let dataSource = Object.create(this.state.data);
-    // dataSource.forEach(traverseNodes);
-    // this.setState({ data: dataSource });
 
     const {data} = this.state
 

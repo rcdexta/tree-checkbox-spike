@@ -10,11 +10,11 @@ export default class TreeNode extends Component {
 
   render() {
     let {collapsed} = this.state
-    
+
     var containerClass = collapsed ? 'collapsed' : ''
     var node = this.props.node
     var childNodes
-    
+
     if (node.children && !collapsed) {
       childNodes = node.children.map((child, index) => {
         return (
@@ -25,26 +25,32 @@ export default class TreeNode extends Component {
               handleChange={this.props.handleChange}
             />
           </ul>
-        );       
+        );
       })
     }
+
+    console.log(node.children)
 
     return (
       <li className={containerClass}>
         <span onClick={this.handleClick} onTouchEnd={this.handleClick}>
-          { node.children === undefined || node.children === [] ?
-            '' :
-            (collapsed ? <i className="fa fa-plus-square-o tree_handles" aria-hidden="true"/> : <i className="fa fa-minus-square-o tree_handles" aria-hidden="true" />)
+          { node.children === undefined || node.children.length === 0 ?
+            <span className="placeholder"></span> :
+            (collapsed ? <i className="material-icons">add_circle_outline</i> : <i className="material-icons">remove_circle_outline</i>)
           }
         </span>
-        <input 
+
+        <input
           type='checkbox'
+          id={`checkbox${node.id}`}
           className={node.partialChecked ? 'indeterminate' : 'pristine'}
           checked={node.checked || false}
           onChange={this.props.handleChange}
           data-key={node.id}
         />
-        <span onClick={this.handleClick} onTouchEnd={this.handleClick}>{node.text}</span>
+        <label htmlFor={`checkbox${node.id}`}><span></span>
+          {node.text}
+        </label>
         {childNodes}
       </li>
     )
