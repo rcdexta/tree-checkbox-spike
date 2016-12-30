@@ -3,51 +3,97 @@ import React, {Component} from 'react'
 
 export default class Tree extends Component {
 
-    state = {data: this.props.data}
-  
+  nodeIndex = {}
+  parentIndex = {}
+  state = {data: this.props.data}
+
+  createLookupIndices = (nodes, parent) => {
+    nodes.forEach((item) => {
+      let id = item.id.toString();
+      this.nodeIndex[id] = item
+      this.parentIndex[id] = parent
+      if (item.children) {
+        this.createLookupIndices(item.children, item)
+      }
+    })
+  }
+
+  checkAllAncestors = (node) => {
+    let immediateParent = this.parentIndex[node.id]
+    if (immediateParent === undefined) return
+    let allChildrenChecked = immediateParent.children.every((e) => e.checked)
+    immediateParent.checked = allChildrenChecked
+
+    if (!allChildrenChecked) {
+      let someChildrenChecked = immediateParent.children.some((e) => e.checked || e.partialChecked)
+      immediateParent.partialChecked = someChildrenChecked
+    } else {
+      immediateParent.partialChecked = false
+    }
+
+    this.checkAllAncestors(immediateParent)
+  }
+
+  componentWillMount() {
+    let parent = undefined
+    this.createLookupIndices(this.state.data, parent)
+  }
+
   handleChange = (evt) => {
 
-    var checked = evt.target.checked;
-    var key = evt.target.getAttribute('data-key');
+    let checked = evt.target.checked;
+    let key = evt.target.getAttribute('data-key');
 
-    var checkAllNodes = function (node) {
+    let checkAllChildren = function (node) {
       node.checked = checked;
-      if (node.children) { node.children.forEach(checkAllNodes); }
+      if (node.children) {
+        node.children.forEach(checkAllChildren);
+      }
     };
 
-
-    var traverseNodes = function (node) {
+    let traverseNodes = function (node) {
       if (node.id == key) {
         node.checked = checked;
-        if (node.children) { node.children.forEach(checkAllNodes); }
+        if (node.children) {
+          node.children.forEach(checkAllChildren);
+        }
       }
-        
+
       if (node.children) {
         node.children.forEach(traverseNodes);
       }
     };
-      
 
-    var dataSource = Object.create(this.state.data);
-    dataSource.forEach(traverseNodes);
-    this.setState({ data: dataSource });
+    // let dataSource = Object.create(this.state.data);
+    // dataSource.forEach(traverseNodes);
+    // this.setState({ data: dataSource });
 
-    // this.state.data.forEach(traverseNodes);
-    // this.setState(this.state.data);
+    const {data} = this.state
+
+    let selectedNode = this.nodeIndex[key]
+    selectedNode.checked = checked
+    if (selectedNode.children) {
+      selectedNode.children.forEach(checkAllChildren);
+    }
+    this.checkAllAncestors(selectedNode)
+
+    this.setState({data: data});
   }
-  
+
   render() {
     return (
       <ul className='checkbox-tree'>
-        {this.state.data.map(function (node, i) {
-          return (
-            <TreeNode
-              key={node.id}
-              node={node}
-              handleChange={this.handleChange}
-            />
-          );
-        }, this)}
+        {
+          this.state.data.map((node) => {
+            return (
+              <TreeNode
+                key={node.id}
+                node={node}
+                handleChange={this.handleChange}
+              />
+            );
+          })
+        }
       </ul>
     );
   }

@@ -8,6 +8,10 @@ export default class TreeNode extends Component {
     this.setState({collapsed: !this.state.collapsed})
   }
 
+  // componentDidMount() {
+  //   this.refs.checkbox.indeterminate = this.props.node.partialChecked
+  // }
+
   render() {
     let {collapsed} = this.state
     
@@ -38,12 +42,13 @@ export default class TreeNode extends Component {
           }
         </span>
         <input 
-          type='checkbox' 
+          type='checkbox'
+          ref="checkbox"
           checked={node.checked || false}
           onChange={this.props.handleChange}
           data-key={node.id}
         />
-        <span onClick={this.handleClick} onTouchEnd={this.handleClick}>{node.text}</span>
+        <span onClick={this.handleClick} onTouchEnd={this.handleClick}>{node.text} {node.partialChecked ? '++' : ''}</span>
         {childNodes}
       </li>
     )
