@@ -3,8 +3,6 @@ import React, {Component} from 'react'
 
 export default class Tree extends Component {
 
-  nodeIndex = {}
-  parentIndex = {}
   state = {data: this.props.data}
 
   createFastLookUpIndex = (nodes, parent) => {
@@ -19,13 +17,13 @@ export default class Tree extends Component {
   }
 
   checkAllAncestors = (node) => {
-    let immediateParent = this.parentIndex[node.id]
+    const immediateParent = this.parentIndex[node.id]
     if (immediateParent === undefined) return
-    let allChildrenChecked = immediateParent.children.every((e) => e.checked)
+    const allChildrenChecked = immediateParent.children.every((e) => e.checked)
     immediateParent.checked = allChildrenChecked
 
     if (!allChildrenChecked) {
-      let someChildrenChecked = immediateParent.children.some((e) => e.checked || e.partialChecked)
+      const someChildrenChecked = immediateParent.children.some((e) => e.checked || e.partialChecked)
       immediateParent.partialChecked = someChildrenChecked
     } else {
       immediateParent.partialChecked = false
@@ -34,9 +32,20 @@ export default class Tree extends Component {
     this.checkAllAncestors(immediateParent)
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.constructTree(nextProps.data)
+    this.setState({data: nextProps.data});
+  }
+
   componentWillMount() {
-    let parent = undefined
-    this.createFastLookUpIndex(this.state.data, parent)
+    this.constructTree(this.state.data)
+  }
+
+  constructTree = (data) => {
+    const parent = undefined
+    this.nodeIndex = {}
+    this.parentIndex = {}
+    this.createFastLookUpIndex(data, parent)
   }
 
   componentDidUpdate() {
@@ -44,12 +53,30 @@ export default class Tree extends Component {
     document.querySelectorAll('input.pristine').forEach((checkbox) => checkbox.indeterminate = false)
   }
 
+  emitHighLevelCheckedNodes = () => {
+    const selectedNodes = []
+    const {data} = this.state
+
+    const traverseCheckedParents = (node) => {
+      if (node.checked) {
+        selectedNodes.push(node)
+      } else if (node.children) {
+        node.children.forEach(traverseCheckedParents)
+      }
+    }
+
+    data.forEach(traverseCheckedParents)
+
+    this.props.onCheck(selectedNodes)
+  }
+
+
   handleChange = (evt) => {
 
-    let checked = evt.target.checked;
-    let key = evt.target.getAttribute('data-key');
+    const checked = evt.target.checked;
+    const key = evt.target.getAttribute('data-key');
 
-    let checkAllChildren = function (node) {
+    const checkAllChildren = (node) => {
       node.checked = checked;
       if (node.children) {
         node.children.forEach(checkAllChildren);
@@ -58,7 +85,7 @@ export default class Tree extends Component {
 
     const {data} = this.state
 
-    let selectedNode = this.nodeIndex[key]
+    const selectedNode = this.nodeIndex[key]
     selectedNode.checked = checked
     selectedNode.partialChecked = false
     if (selectedNode.children) {
@@ -66,7 +93,10 @@ export default class Tree extends Component {
     }
     this.checkAllAncestors(selectedNode)
 
-    this.setState({data: data});
+    this.setState({data: data}, () => {
+      this.emitHighLevelCheckedNodes()
+    });
+
   }
 
   render() {
@@ -87,4 +117,9 @@ export default class Tree extends Component {
     );
   }
 
+}
+
+Tree.propTypes = {
+  data: React.PropTypes.array.isRequired,
+  onCheck: React.PropTypes.func
 }

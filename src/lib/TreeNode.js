@@ -29,8 +29,6 @@ export default class TreeNode extends Component {
       })
     }
 
-    console.log(node.children)
-
     return (
       <li className={containerClass}>
         <span onClick={this.handleClick} onTouchEnd={this.handleClick}>
@@ -56,4 +54,8 @@ export default class TreeNode extends Component {
     )
   }
 
+}
+
+TreeNode.propTypes = {
+  node: React.PropTypes.object.isRequired
 }

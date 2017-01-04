@@ -10,6 +10,17 @@ const TEST_DATA = [{"id":1,"text":"Network-112","children":[{"id":2,"text":"netw
 
 class App extends Component {
 
+  state = {tree: [{id: "1", text: 'I am waiting...', children: []}]}
+
+  loadData = () => {
+    this.setState({tree: TEST_DATA})
+  }
+
+  //arg will be an array of the high level checked nodes
+  getCheckedNodes = (checkedNodes) => {
+    console.log(checkedNodes)
+  }
+
   render() {
     return (
       <div className="App">
@@ -19,7 +30,9 @@ class App extends Component {
         </div>
         <div className="App-intro">
 
-          <Tree data={TEST_DATA} />
+          <Tree data={this.state.tree} onCheck={this.getCheckedNodes} />
+
+          <button onClick={this.loadData} >Load data</button>
 
         </div>
       </div>
